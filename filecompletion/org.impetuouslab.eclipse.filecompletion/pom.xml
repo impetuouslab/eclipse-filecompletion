@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>filecompletion</artifactId>
+		<groupId>org.impetuouslab.eclipse</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>org.impetuouslab.eclipse.filecompletion</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<outputDirectory>bin</outputDirectory>
+	</build>
+
+</project>1
