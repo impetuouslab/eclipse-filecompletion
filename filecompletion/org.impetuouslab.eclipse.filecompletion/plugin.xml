@@ -2,23 +2,51 @@
 <?eclipse version="3.2"?>
 <plugin>
 
-  <extension
-         point="org.eclipse.ui.startup">
-      <startup
-            class="org.impetuouslab.eclipse.filecompletion.FileCompletionStarter">
-      </startup>
-</extension>
 
 
  <extension point="org.eclipse.jdt.ui.javaCompletionProposalComputer"
    id="FileCompiltionComputer"
    name="FileCompiltionComputer">
    <javaCompletionProposalComputer
-      class="org.impetuouslab.eclipse.filecompletion.FileCompletionProposalComputer"
-      categoryId="org.eclipse.jdt.ui.JavaAllCompletionProposalComputer">
+         activate="true"
+         categoryId="org.eclipse.jdt.ui.JavaAllCompletionProposalComputer"
+         class="org.impetuouslab.eclipse.filecompletion.impl.FileCompletionImpl">
       <partition type="__java_string"/>
    </javaCompletionProposalComputer>
  </extension>
 
+
+
+ <extension
+       id="org.impetuouslab.eclipse.filecompletion.marker"
+       name="org.impetuouslab.eclipse.filecompletion.marker"
+       point="org.eclipse.core.resources.markers">
+       <persistent
+             value="true">
+       </persistent>
+      </extension>
+
+   <extension
+         id="FileNotFound"
+         name="File not found"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <super type="org.impetuouslab.eclipse.filecompletion.marker"/>
+      <persistent value="true" />
+   </extension>
+
+
+
+<extension
+      id="org.impetuouslab.eclipse.filecompletion.MarkerFinder"
+      name="%MarkerFinder"
+      point="org.eclipse.jdt.core.compilationParticipant">
+   <compilationParticipant
+         class="org.impetuouslab.eclipse.filecompletion.impl.MarkerFinderImpl"
+         id="org.impetuouslab.eclipse.filecompletion.MarkerFinder2">
+   </compilationParticipant>
+</extension>
+<!--
+-->
 
 </plugin>

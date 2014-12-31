@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.jdt.ui,
  org.eclipse.jface.text,
  org.eclipse.swt,
  org.eclipse.ui,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.eclipse.core.resources
 Eclipse-LazyStart: true
 Bundle-Vendor: Impetuous Laboratories
-Export-Package: org.impetuouslab.eclipse.filecompletion
+Export-Package: org.impetuouslab.eclipse.filecompletion.impl

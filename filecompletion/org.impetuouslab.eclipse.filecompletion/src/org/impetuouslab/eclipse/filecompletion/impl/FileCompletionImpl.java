@@ -35,7 +35,7 @@ public class FileCompletionImpl implements IJavaCompletionProposalComputer {
 			ContentAssistInvocationContext context, IProgressMonitor monitor) {
 
 		try {
-			LOG.info("stating proposal");
+			LOG.fine("stating proposal");
 			int documentOffset = context.getInvocationOffset();
 			IWorkbenchPage workbenchPage = PlatformUI.getWorkbench()
 					.getWorkbenchWindows()[0].getActivePage();
@@ -46,7 +46,7 @@ public class FileCompletionImpl implements IJavaCompletionProposalComputer {
 				LOG.info("adapter is null");
 			} else if (adapter instanceof ICompilationUnit) {
 				ICompilationUnit cu = (ICompilationUnit) adapter;
-				LOG.info("we found CompilationUnit ");
+				LOG.fine("we found CompilationUnit ");
 
 				try {
 					String source = cu.getSource();
@@ -54,10 +54,12 @@ public class FileCompletionImpl implements IJavaCompletionProposalComputer {
 						StringLiteral fileProposals = findStringLiteral(source,
 								documentOffset);
 						if (fileProposals == null) {
-							LOG.info("looks like not in string literal");
+							LOG.fine("looks like not in string literal");
 						} else {
-							List<ICompletionProposal> proposals = calculateProposals(
+
+							List<ICompletionProposal> proposals = calculateProposalsAndPrintTime(
 									fileProposals, documentOffset);
+
 							return proposals;
 						}
 					} else {
@@ -108,11 +110,26 @@ public class FileCompletionImpl implements IJavaCompletionProposalComputer {
 		return fileClassFinder.getFoundedNode();
 	}
 
+	static List<ICompletionProposal> calculateProposalsAndPrintTime(final StringLiteral stringLiteral, final int documentOffset) throws IOException{
+	    long start = System.currentTimeMillis();
+	    List<ICompletionProposal> completionProposals=calculateProposals(stringLiteral, documentOffset);
+	    start = System.currentTimeMillis() - start;
+        start = start / 1000;
+        if (start > 3) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("proposal calculation took ");
+            stringBuilder.append(start);
+            stringBuilder.append(" sec for ");
+            stringBuilder.append(stringLiteral.getLiteralValue());
+            LOG.info(stringBuilder.toString());
+        }
+	    return completionProposals;
+	}
+
 	static List<ICompletionProposal> calculateProposals(
 			final StringLiteral stringLiteral, final int documentOffset)
 			throws IOException {
-		long start = System.currentTimeMillis();
-		LOG.info("escaped value 2 = " + stringLiteral.getLiteralValue());
+		LOG.info("literal value = " + stringLiteral.getLiteralValue());
 		List<ICompletionProposal> sss = new ArrayList<ICompletionProposal>();
 		if (stringLiteral.getLiteralValue().trim().isEmpty()) {
 			sss = calculateProposalsForEmptyString(stringLiteral,
@@ -164,17 +181,14 @@ public class FileCompletionImpl implements IJavaCompletionProposalComputer {
 				}
 			}
 		}
+		LOG.info("proposal count "+sss.size());
 		Collections.sort(sss, new Comparator<ICompletionProposal>() {
 			public int compare(ICompletionProposal o1, ICompletionProposal o2) {
 				return o1.getDisplayString().compareToIgnoreCase(
 						o2.getDisplayString());
 			}
 		});
-		start = System.currentTimeMillis() - start;
-		start = start / 1000;
-		if (start > 3) {
-			LOG.info("too much time " + start);
-		}
+
 		return sss;
 	}
 
