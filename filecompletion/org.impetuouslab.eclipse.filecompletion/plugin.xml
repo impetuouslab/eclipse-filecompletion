@@ -49,4 +49,56 @@
 <!--
 -->
 
+   <extension
+         point="org.eclipse.ui.commands">
+
+               <category
+            name="org.impetuouslab.eclipse.filecompletion"
+            description="org.impetuouslab.eclipse.filecompletion"
+            id="org.impetuouslab.eclipse.filecompletion" />
+
+      <command
+            name="Open file from java source in Eclipse"
+         
+            defaultHandler="org.impetuouslab.eclipse.filecompletion.impl.OpenFileInEclipseImpl"
+            categoryId="org.impetuouslab.eclipse.filecompletion"
+            id="org.impetuouslab.eclipse.filecompletion.openFileInEclipse" />
+                  <command
+            name="Open file from java source in external tool"
+            
+            defaultHandler="org.impetuouslab.eclipse.filecompletion.impl.OpenFileInExternalTool"
+            categoryId="org.impetuouslab.eclipse.filecompletion"
+            id="org.impetuouslab.eclipse.filecompletion.openFileInExternalTool" />
+</extension>
+
+
+<extension
+ point="org.eclipse.ui.bindings">
+ <key
+       commandId="org.impetuouslab.eclipse.filecompletion.openFileInEclipse"
+       contextId="org.eclipse.jdt.ui.javaEditorScope"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M2+F6"/>
+  
+   <key
+         commandId="org.impetuouslab.eclipse.filecompletion.openFileInExternalTool"
+         contextId="org.eclipse.jdt.ui.javaEditorScope"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="M2+F7"/>
+  
+ <scheme
+  name="OpenFileFromJavaSource"
+  description="Open File From Java Source"
+  id="org.impetuouslab.eclipse.filecompletion.schemeid" />
+</extension>
+
+
+   <extension
+      point = "org.eclipse.ui.preferencePages">
+       <page id="org.impetuouslab.eclipse.filecompletion.pref"
+	    class="org.impetuouslab.eclipse.filecompletion.FileCompletionPreferencePage"
+            name="File completion">
+       </page>
+   </extension>
+
 </plugin>
