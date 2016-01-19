@@ -1,6 +1,7 @@
 package org.impetuouslab.eclipse.filecompletion;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -17,11 +18,20 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class FileCompletionPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	private static final java.util.logging.Logger LOG = java.util.logging.Logger
+	private static final Logger LOG = Logger
 			.getLogger(FileCompletionPreferencePage.class.getName());
 
+	static {
+		LOG.info("filecompletion : static init done");
+	}
+	
 	private volatile String currentValue;
+	
+	
+	public static volatile boolean checkDuringTyping = false;
 
+	private static volatile boolean checkDuringTypingProposed = false;
+	
 	public FileCompletionPreferencePage() {
 	}
 
@@ -34,9 +44,17 @@ public class FileCompletionPreferencePage extends PreferencePage implements
 	}
 
 	public void init(IWorkbench workbench) {
+		LOG.info("filecompletion : about to init ..");
 		currentValue = FileCompletionActivator.getDefault()
 				.getPreferenceStore()
 				.getString(FileCompletionActivator.openFileWithExternalProgramPerfId);
+		
+		checkDuringTyping=FileCompletionActivator.getDefault()
+				.getPreferenceStore()
+				.getBoolean(FileCompletionActivator.checkDuringTypingId);
+		
+		checkDuringTypingProposed=checkDuringTyping;
+		
 		setPreferenceStore(FileCompletionActivator.getDefault()
 				.getPreferenceStore());
 	}
@@ -88,6 +106,21 @@ public class FileCompletionPreferencePage extends PreferencePage implements
 
 			}
 		});
+
+		final Button doVerifictionOnline = new Button(parent, SWT.CHECK);		
+		doVerifictionOnline.setText("Check file name during typing");
+		doVerifictionOnline.setSelection(checkDuringTyping);
+		checkDuringTypingProposed=checkDuringTyping;
+		doVerifictionOnline.addSelectionListener(new SelectionListener() {
+			
+			public void widgetSelected(SelectionEvent paramSelectionEvent) {
+				checkDuringTypingProposed = doVerifictionOnline.getSelection();				
+			}
+			
+			public void widgetDefaultSelected(SelectionEvent paramSelectionEvent) {
+				
+			}
+		});
 		if (currentValue != null) {
 			text.setText(currentValue);
 		}
@@ -121,6 +154,15 @@ public class FileCompletionPreferencePage extends PreferencePage implements
 					.setValue(
 							FileCompletionActivator.openFileWithExternalProgramPerfId,
 							currentValue);
+			
+			checkDuringTyping=checkDuringTypingProposed;
+			
+			FileCompletionActivator
+				.getDefault()
+				.getPreferenceStore()
+				.setValue(
+						FileCompletionActivator.checkDuringTypingId,
+						checkDuringTyping);
 		} else {
 			return false;
 		}

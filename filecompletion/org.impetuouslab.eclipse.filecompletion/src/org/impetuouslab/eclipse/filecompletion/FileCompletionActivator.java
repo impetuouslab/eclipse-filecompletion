@@ -19,8 +19,12 @@ public class FileCompletionActivator extends AbstractUIPlugin {
      */
     public static final String openFileWithExternalProgramPerfId="org.impetuouslab.eclipse.filecompletion.openFileWithExternalProgram";
 
+    public static final String checkDuringTypingId="org.impetuouslab.eclipse.filecompletion.checkDuringTyping";
+
+    
     public FileCompletionActivator() {
         plugin = this;
+        LOG.info("filecompletion : activated");
     }
 
     public static FileCompletionActivator getDefault() {

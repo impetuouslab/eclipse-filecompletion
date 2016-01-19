@@ -19,3 +19,4 @@ Eclipse-LazyStart: true
 Bundle-Vendor: Impetuous Laboratories
 Export-Package: org.impetuouslab.eclipse.filecompletion.impl
 Bundle-Activator: org.impetuouslab.eclipse.filecompletion.FileCompletionActivator
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
