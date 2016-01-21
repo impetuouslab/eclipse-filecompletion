@@ -6,7 +6,7 @@ File names completion Eclipse plugin
 Provides features:
 
 *   File name completion for expression like `new File("c:/")`
-*   Open file from above expression in eclipse (Shift-F6)  and external viewer (Shift-F7). External viewer need specify in properties.
+*   Open file from above expression in eclipse (Shift-F6)  and external viewer (Shift-F7)
 *   Validate file name during typing (Need enable in config)
 *   Regular expression assist helper for expression like :
     `Pattern.compile("[^B] nice")` ,
@@ -17,13 +17,13 @@ Provides features:
 
 
 ###  Download
-[Download plugin](http://raw.githubusercontent.com/impetuouslab/eclipse-filecompletion/propose1/update-site/plugins/org.impetuouslab.eclipse.filecompletion_0.0.1.201601191422.jar) 
+[Download plugin](http://raw.githubusercontent.com/impetuouslab/eclipse-filecompletion/propose1/update-site/plugins/org.impetuouslab.eclipse.filecompletion_0.0.1.201601210908.jar)
 
 ### Screenshots
 File completion assist :
 
 ![File assist](images/file-assist.jpg "File assist")
- 
+
 Regualr expression assist :
 
 ![Regexp assist](images/regexp1.jpg "Regexp assist")
@@ -31,5 +31,4 @@ Regualr expression assist :
 Properties :
 
 ![Properties](images/properties.jpg "Properties")
- 
- 
+
