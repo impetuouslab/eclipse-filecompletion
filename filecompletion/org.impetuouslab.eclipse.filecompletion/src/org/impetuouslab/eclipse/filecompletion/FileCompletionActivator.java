@@ -17,7 +17,11 @@ public class FileCompletionActivator extends AbstractUIPlugin {
     /**
      * This id is used to store external program path
      */
-    public static final String openFileWithExternalProgramPerfId="org.impetuouslab.eclipse.filecompletion.openFileWithExternalProgram";
+    public static final String openFileWithExternalProgramCmdPerfId="org.impetuouslab.eclipse.filecompletion.openFileWithExternalProgramCmd";
+    
+    public static final String openFileWithExternalProgramArgsPerfId="org.impetuouslab.eclipse.filecompletion.openFileWithExternalProgramArgs";
+    
+    public static final String fileCompletionPref="org.impetuouslab.eclipse.filecompletion.pref";
 
     public static final String checkDuringTypingId="org.impetuouslab.eclipse.filecompletion.checkDuringTyping";
 

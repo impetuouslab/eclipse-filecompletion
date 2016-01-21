@@ -3,7 +3,8 @@ package org.impetuouslab.eclipse.filecompletion.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.core.dom.*;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.StringLiteral;
 
 /**
  * Aux class for finding all file constructors and reg exp paterns

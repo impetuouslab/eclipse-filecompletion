@@ -5,9 +5,10 @@
 
 
  <extension point="org.eclipse.jdt.ui.javaCompletionProposalComputer"
-   id="FileCompiltionComputer"
-   name="FileCompiltionComputer">
-   <javaCompletionProposalComputer
+   id="FileCompletionComputer"
+   name="FileCompletionComputer">
+   <javaCompletionProposalComputer 
+         needsSortingAfterFiltering="true"
          activate="true"
          categoryId="org.eclipse.jdt.ui.JavaAllCompletionProposalComputer"
          class="org.impetuouslab.eclipse.filecompletion.impl.FileCompletionImpl">

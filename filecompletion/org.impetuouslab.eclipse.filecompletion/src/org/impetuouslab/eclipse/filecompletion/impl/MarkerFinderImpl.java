@@ -61,7 +61,7 @@ public class MarkerFinderImpl extends CompilationParticipant {
 			ITypeRoot typeRoot = compilationUnit.getTypeRoot();
 			resource = typeRoot.getResource();
 
-			l: if (lastVerifiedResource != null && lastVerifiedResource.equals(resource.toString())) {
+			if (lastVerifiedResource != null && lastVerifiedResource.equals(resource.toString())) {
 				// avoiding too often invocations
 				if (System.currentTimeMillis() - lastVerifiedTime < FileCompletionSettings.minTimeToVerify) {
 					return;

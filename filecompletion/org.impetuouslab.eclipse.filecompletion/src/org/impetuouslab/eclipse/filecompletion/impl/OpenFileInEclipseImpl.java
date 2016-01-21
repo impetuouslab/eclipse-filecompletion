@@ -3,23 +3,33 @@ package org.impetuouslab.eclipse.filecompletion.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.impetuouslab.eclipse.filecompletion.FileCompletionActivator;
+import org.impetuouslab.eclipse.filecompletion.FileCompletionPreferencePage;
 
 public class OpenFileInEclipseImpl implements IHandler {
 	private static final java.util.logging.Logger LOG = java.util.logging.Logger
@@ -40,8 +50,7 @@ public class OpenFileInEclipseImpl implements IHandler {
 		return null;
 	}
 
-	public static void openFile(ExecutionEvent event, boolean inEclipse)
-			throws ExecutionException {
+	public static void openFile(ExecutionEvent event, boolean inEclipse) throws ExecutionException {
 		LOG.info("execute " + event);
 		LOG.info("execute " + event.getCommand());
 		LOG.info("execute " + event.getTrigger());
@@ -51,49 +60,45 @@ public class OpenFileInEclipseImpl implements IHandler {
 			LOG.fine("stating proposal");
 			Event event2 = (Event) event.getTrigger();
 			LOG.info("widget" + event2.widget);
-			IWorkbenchPage workbenchPage = PlatformUI.getWorkbench()
-					.getWorkbenchWindows()[0].getActivePage();
+			IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage();
 			IEditorPart compilationUnit = workbenchPage.getActiveEditor();
 			IEditorInput editorInput = compilationUnit.getEditorInput();
 			Object adapter = editorInput.getAdapter(IJavaElement.class);
-			if (workbenchPage.getActiveEditor() instanceof org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor) {
+			IEditorPart activeEditor = workbenchPage.getActiveEditor();
+			if (activeEditor instanceof org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor) {
 				LOG.info("we are in java editor ");
-				org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor cue = (org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor) workbenchPage
-						.getActiveEditor();
-
+				org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor cue = (org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor) activeEditor;
 				int documentOffset = cue.getViewer().getSelectedRange().x;
 				if (adapter == null) {
 					LOG.info("adapter is null");
 				} else if (adapter instanceof ICompilationUnit) {
 					ICompilationUnit cu = (ICompilationUnit) adapter;
-					LOG.fine("we found CompilationUnit ");
-
+					LOG.fine("we found CompilationUnit");
 					String source = cu.getSource();
-					if (FileCompletionImpl.isInStringLiteral(source,
-							documentOffset)) {
-						StringLiteral fileProposals = FileCompletionImpl
-								.findStringLiteral(source, documentOffset)
-								.getFoundedNode();
-						if (fileProposals == null) {
-							LOG.fine("looks like not in string literal");
-						} else {
-							String literalValue = fileProposals
-									.getLiteralValue();
-							literalValue = literalValue.replace('\\', '/');
-							File file = new File(literalValue);
-							if (file.exists()) {
-								if (inEclipse) {
-									openFile(file);
-								} else {
-									openFileInExternalProgram(file);
-								}
+					if (FileCompletionImpl.isInStringLiteral(source, documentOffset)) {
+						FileClassFinder findStringLiteral = FileCompletionImpl.findStringLiteral(source,
+								documentOffset);
+						if (findStringLiteral.isFile()) {
+							StringLiteral fileProposals = findStringLiteral.getFoundedNode();
+							if (fileProposals == null) {
+								LOG.info("looks like not in string literal");
 							} else {
-								MessageDialog.openError(
-										null,
-										"File not found",
-										"File not found: "
-												+ file.getAbsolutePath());
+								String literalValue = fileProposals.getLiteralValue();
+								literalValue = literalValue.replace('\\', '/');
+								File file = new File(literalValue);
+								if (file.exists()) {
+									if (inEclipse) {
+										openFileInEclipse(file);
+									} else {
+										openFileInExternalProgram(file);
+									}
+								} else {
+									MessageDialog.openError(null, "File not found",
+											"File not found: " + file.getAbsolutePath());
+								}
 							}
+						} else {
+							LOG.info("found but not it is not file");
 						}
 					} else {
 						LOG.info("not in string literal");
@@ -111,59 +116,57 @@ public class OpenFileInEclipseImpl implements IHandler {
 
 	public static void inittt() {
 		if (txtEditorId == null) {
-			txtEditorId = PlatformUI.getWorkbench().getEditorRegistry()
-					.getDefaultEditor("a.txt").getId();
+			txtEditorId = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor("a.txt").getId();
 		}
 	}
 
-	public static void openFile(File file) throws Exception {
-
+	public static void openFileInEclipse(File file) throws Exception {
 		LOG.info("opening file " + file);
-		LOG.info("opening file " + file);
-		LOG.info("open in eclipse " + file);
 		IFile findFile = (IFile) findFileResourceInEclipse(file);
-		final IEditorDescriptor editorDescriptor = PlatformUI.getWorkbench()
-				.getEditorRegistry().getDefaultEditor(file.getAbsolutePath());
+		final IEditorDescriptor editorDescriptor = PlatformUI.getWorkbench().getEditorRegistry()
+				.getDefaultEditor(file.getAbsolutePath());
 		String edId;
 		if (editorDescriptor == null) {
 			LOG.info("editor desc is null");
+			if (file.isFile() && file.length() > FileCompletionSettings.maxFileSizeToOpen) {
+				MessageDialog.openError(null, "File open error", "File too big : " + file.length());
+				return;
+			}
 			inittt();
 			edId = txtEditorId;
 		} else {
 			edId = editorDescriptor.getId();
 		}
 		if (findFile == null) {
-			LOG.info("can't fine file in workspace " + file);
+			LOG.info("can't find file in workspace, opening in external editor : " + file);
 			openFileInExternalProgram(file);
 		} else {
-			LOG.info("found " + findFile);
+			LOG.info("found file in workspace : " + findFile);
 			final FileEditorInput editorInput = new FileEditorInput(findFile);
-			IWorkbenchPage workbenchPage = PlatformUI.getWorkbench()
-					.getWorkbenchWindows()[0].getActivePage();
+			IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage();
 			workbenchPage.openEditor(editorInput, edId);
 		}
 	}
 
-	public static IResource findFileResourceInEclipse(final File fileToFind)
-			throws Exception {
-		LOG.info("1");
+	public static IResource findFileResourceInEclipse(final File fileToFind) throws Exception {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		ResourceFinder visitor = new ResourceFinder(fileToFind);
 		root.accept(visitor, IResource.NONE);
-		LOG.info("sinished");
+		LOG.info("finished");
 		return visitor.getFoundedResource();
 	}
 
 	public static void openFileInExternalProgram(File file) throws IOException {
-		String programPathString = FileCompletionActivator.getDefault()
-				.getPreferenceStore()
-				.getString(FileCompletionActivator.openFileWithExternalProgramPerfId);
-		if (programPathString==null||programPathString.trim().length()==0) {
+		LOG.info("opening file : " + file);
+		String programPathString = FileCompletionActivator.getDefault().getPreferenceStore()
+				.getString(FileCompletionActivator.openFileWithExternalProgramCmdPerfId);
+		if (programPathString == null || programPathString.trim().length() == 0) {
 			LOG.info("opening pref dialog");
-			PreferenceDialog createPreferenceDialogOn = PreferencesUtil.createPreferenceDialogOn(null, "org.impetuouslab.eclipse.filecompletion.pref", null, null);
+			PreferenceDialog createPreferenceDialogOn = PreferencesUtil.createPreferenceDialogOn(null,
+					FileCompletionActivator.fileCompletionPref, null, null);
 			createPreferenceDialogOn.open();
 			LOG.info("finishing pref dialog");
-			//user should try again after setting external program
+			// user should try again after setting external program
 			return;
 		}
 		LOG.info("programPathString = " + programPathString);
@@ -171,8 +174,16 @@ public class OpenFileInEclipseImpl implements IHandler {
 		if (!programFile.isFile()) {
 			throw new FileNotFoundException(programPathString);
 		}
-		String[] command = new String[] { programPathString,
-				file.getAbsolutePath() };
+		ArrayList<String> cmd = new ArrayList<String>();
+		cmd.add(programPathString);
+		String args = FileCompletionActivator.getDefault().getPreferenceStore()
+				.getString(FileCompletionActivator.openFileWithExternalProgramArgsPerfId);
+		if (args != null && args.length() > 0) {
+			cmd.addAll(Arrays.asList(args.split(" ")));
+		}
+		cmd.add(file.getAbsolutePath());
+		LOG.info("command to run : " + cmd);
+		String[] command = cmd.toArray(new String[0]);
 		Runtime.getRuntime().exec(command);
 	}
 

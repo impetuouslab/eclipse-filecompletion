@@ -59,6 +59,7 @@ public class FileCompletionImpl implements IJavaCompletionProposalComputer {
 										fileProposals.getFoundedNode(),
 										documentOffset);
 							} else {
+								// Only 2 choices possible, see FileClassFinder#visit() method
 								return RegExpPatternProposalsCalculator
 										.calculateProposals(
 												fileProposals.getFoundedNode(),
