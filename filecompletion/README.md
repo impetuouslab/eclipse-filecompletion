@@ -16,8 +16,13 @@ Provides features:
 
 
 
+<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2690820" class="drag" title="Drag onto your running Eclipse toolbar to install this plugin"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag onto your running Eclipse toolbar to install this plugin" /></a>
+
+
 ###  Download
-[Download plugin](http://raw.githubusercontent.com/impetuouslab/eclipse-filecompletion/propose1/update-site/plugins/org.impetuouslab.eclipse.filecompletion_0.0.1.201601210908.jar)
+[Download plugin jar](http://raw.githubusercontent.com/impetuouslab/eclipse-filecompletion/propose1/update-site/plugins/org.impetuouslab.eclipse.filecompletion_0.0.1.201601210908.jar)
+
+[Eclipse marketplace plugin site](https://marketplace.eclipse.org/content/file-completion)
 
 ### Screenshots
 File completion assist :
