@@ -28,15 +28,15 @@ Provides features:
 ### Screenshots
 File completion assist :
 
-![File assist](images/file-assist.jpg "File assist")
+![File assist](../images/file-assist.jpg "File assist")
 
 Regualr expression assist :
 
-![Regexp assist](images/regexp1.jpg "Regexp assist")
+![Regexp assist](../images/regexp1.jpg "Regexp assist")
 
 Preferences :
 
-![Preferences](images/properties.jpg "Properties")
+![Preferences](../images/properties.jpg "Properties")
 
 
 <a href="http://with-eclipse.github.io/" target="_blank">

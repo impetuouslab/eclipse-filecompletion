@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.impetuouslab.eclipse.filecompletion.feature_0.0.1.qualifier.jar" id="org.impetuouslab.eclipse.filecompletion.feature" version="0.0.1.qualifier">
+      <category name="org.impetuouslab.eclipse"/>
+   </feature>
+   <category-def name="org.impetuouslab.eclipse" label="Impetuous Utils"/>
+</site>

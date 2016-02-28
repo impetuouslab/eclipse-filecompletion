@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+
+
+ <extension point="org.eclipse.jdt.ui.javaCompletionProposalComputer"
+   id="FileCompletionComputer"
+   name="FileCompletionComputer">
+   <javaCompletionProposalComputer 
+         needsSortingAfterFiltering="true"
+         activate="true"
+         categoryId="org.eclipse.jdt.ui.JavaAllCompletionProposalComputer"
+         class="org.impetuouslab.eclipse.filecompletion.impl.FileCompletionImpl">
+      <partition type="__java_string"/>
+   </javaCompletionProposalComputer>
+ </extension>
+
+
+
+ <extension
+       id="org.impetuouslab.eclipse.filecompletion.marker"
+       name="org.impetuouslab.eclipse.filecompletion.marker"
+       point="org.eclipse.core.resources.markers">
+       <persistent
+             value="true">
+       </persistent>
+      </extension>
+
+   <extension
+         id="FileNotFound"
+         name="File not found"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <super type="org.impetuouslab.eclipse.filecompletion.marker"/>
+      <persistent value="true" />
+   </extension>
+
+
+
+<extension
+      id="org.impetuouslab.eclipse.filecompletion.MarkerFinder"
+      name="%MarkerFinder"
+      point="org.eclipse.jdt.core.compilationParticipant">
+   <compilationParticipant
+         class="org.impetuouslab.eclipse.filecompletion.impl.MarkerFinderImpl"
+         id="org.impetuouslab.eclipse.filecompletion.MarkerFinder2">
+   </compilationParticipant>
+</extension>
+<!--
+-->
+
+   <extension
+         point="org.eclipse.ui.commands">
+
+               <category
+            name="org.impetuouslab.eclipse.filecompletion"
+            description="org.impetuouslab.eclipse.filecompletion"
+            id="org.impetuouslab.eclipse.filecompletion" />
+
+      <command
+            name="Open file from java source in Eclipse"
+         
+            defaultHandler="org.impetuouslab.eclipse.filecompletion.impl.OpenFileInEclipseImpl"
+            categoryId="org.impetuouslab.eclipse.filecompletion"
+            id="org.impetuouslab.eclipse.filecompletion.openFileInEclipse" />
+                  <command
+            name="Open file from java source in external tool"
+            
+            defaultHandler="org.impetuouslab.eclipse.filecompletion.impl.OpenFileInExternalTool"
+            categoryId="org.impetuouslab.eclipse.filecompletion"
+            id="org.impetuouslab.eclipse.filecompletion.openFileInExternalTool" />
+</extension>
+
+
+<extension
+ point="org.eclipse.ui.bindings">
+ <key
+       commandId="org.impetuouslab.eclipse.filecompletion.openFileInEclipse"
+       contextId="org.eclipse.jdt.ui.javaEditorScope"
+       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+       sequence="M2+F6"/>
+  
+   <key
+         commandId="org.impetuouslab.eclipse.filecompletion.openFileInExternalTool"
+         contextId="org.eclipse.jdt.ui.javaEditorScope"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="M2+F7"/>
+  
+ <scheme
+  name="OpenFileFromJavaSource"
+  description="Open File From Java Source"
+  id="org.impetuouslab.eclipse.filecompletion.schemeid" />
+</extension>
+
+
+   <extension
+      point = "org.eclipse.ui.preferencePages">
+       <page id="org.impetuouslab.eclipse.filecompletion.pref"
+	    class="org.impetuouslab.eclipse.filecompletion.FileCompletionPreferencePage"
+            name="File completion">
+       </page>
+   </extension>
+
+</plugin>
